@@ -1,0 +1,102 @@
+Source: autofs
+Section: utils
+Priority: extra
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Michael Tokarev <mjt@tls.msk.ru>
+Uploaders: Jan Christoph Nordholz <hesso@pool.math.tu-berlin.de>,
+           William Dauchy <wdauchy@gmail.com>
+Standards-Version: 3.9.8
+Build-Depends: debhelper (>= 9), autoconf, lsb-base, dh-systemd,
+ bison,
+ flex,
+ libhesiod-dev,
+ libkrb5-dev,
+ libldap-dev,
+ libsasl2-dev,
+ libssl-dev,
+ libxml2-dev,
+ sssd-common
+Homepage: http://www.kernel.org/pub/linux/daemons/autofs/v5/
+VCS-Browser: https://anonscm.debian.org/cgit/collab-maint/autofs.git
+VCS-Git: https://anonscm.debian.org/git/collab-maint/autofs.git
+
+Package: autofs
+Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ucf
+Provides: autofs5
+Breaks: autofs5 (<< 5.0.6-1~)
+Replaces: autofs5 (<< 5.0.6-1~)
+Recommends: nfs-common, kmod | module-init-tools
+Description: kernel-based automounter for Linux
+ Autofs controls the operation of the automount daemons. The
+ automount daemons automatically mount filesystems when they
+ are used and unmount them after a period of inactivity. This
+ is done based on a set of pre-configured maps.
+ .
+ The kernel automounter implements an almost complete SunOS
+ style automounter under Linux. A recent version of the kernel
+ autofs4 module (builtin or separate) is required.
+ .
+ This is the autofs daemon.
+
+Package: autofs-ldap
+Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, autofs (= ${binary:Version})
+Provides: autofs5-ldap
+Breaks: autofs5-ldap (<< 5.0.6-1~)
+Replaces: autofs5-ldap (<< 5.0.6-1~)
+Description: LDAP map support for autofs
+ Autofs controls the operation of the automount daemons. The
+ automount daemons automatically mount filesystems when they
+ are used and unmount them after a period of inactivity. This
+ is done based on a set of pre-configured maps.
+ .
+ The kernel automounter implements an almost complete SunOS
+ style automounter under Linux. A recent version of the kernel
+ autofs4 module (builtin or separate) is required.
+ .
+ This is the LDAP module of the autofs.
+
+Package: autofs-hesiod
+Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, autofs (= ${binary:Version})
+Provides: autofs5-hesiod
+Breaks: autofs5-hesiod (<< 5.0.6-1~)
+Replaces: autofs5-hesiod (<< 5.0.6-1~)
+Description: Hesiod map support for autofs
+ Autofs controls the operation of the automount daemons. The
+ automount daemons automatically mount filesystems when they
+ are used and unmount them after a period of inactivity. This
+ is done based on a set of pre-configured maps.
+ .
+ The kernel automounter implements an almost complete SunOS
+ style automounter under Linux. A recent version of the kernel
+ autofs4 module (builtin or separate) is required.
+ .
+ This is the Hesiod module of the autofs.
+
+
+Package: autofs5
+Section: oldlibs
+Architecture: all
+Depends: ${misc:Depends}, autofs (>= ${binary:Version})
+Description: transitional dummy package for 'autofs'
+ This transitional dummy package is safe to remove.
+
+Package: autofs5-ldap
+Section: oldlibs
+Architecture: all
+Depends: ${misc:Depends}, autofs-ldap (>= ${binary:Version})
+Description: transitional dummy package for 'autofs-ldap'
+ This transitional dummy package is safe to remove.
+
+Package: autofs5-hesiod
+Section: oldlibs
+Architecture: all
+Depends: ${misc:Depends}, autofs-hesiod (>= ${binary:Version})
+Description: transitional dummy package for 'autofs-hesiod'
+ This transitional dummy package is safe to remove.
+

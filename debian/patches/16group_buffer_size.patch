@@ -1,0 +1,18 @@
+Author: Joel Ebel <jbebel@google.com>
+Bug-Ubuntu: https://launchpad.net/bugs/591100
+Description: Increase group buffer size geometrically rather than
+linearly when its found to be small.
+.
+This prevents package to eat the cpu if you have large groups.
+
+--- a/lib/mounts.c
++++ b/lib/mounts.c
+@@ -1245,7 +1245,7 @@
+ 		status = getgrgid_r(gid, pgr, gr_tmp, tmplen, ppgr);
+ 		if (status != ERANGE)
+ 			break;
+-		tmplen += grplen;
++		tmplen *= 2;
+ 	}
+ 
+ 	if (status || !pgr) {

@@ -1,0 +1,13 @@
+11default_automaster_location.patch
+12disable_default_auto_master.patch
+15auto_net_nfs4.patch
+do-not-check-for-modprobe-procfs-or-load-module.patch
+fix-ldflags.patch
+fix-sssldir.patch
+remove-kernel-mount.nfs-version-check.patch
+#
+# Ubuntu patches
+#
+16group_buffer_size.patch
+fix-ssslib-search.patch
+fix-lookup-ldap-crash.patch
