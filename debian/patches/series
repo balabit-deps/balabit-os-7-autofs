@@ -11,3 +11,4 @@ remove-kernel-mount.nfs-version-check.patch
 16group_buffer_size.patch
 fix-ssslib-search.patch
 fix-lookup-ldap-crash.patch
+autofs-5.1.3-handle-additional-nfs-versions-in-mount.patch

@@ -1,0 +1,42 @@
+From aa1f432180f3878c303088def8d647f1bd50b10b Mon Sep 17 00:00:00 2001
+From: Ian Kent <raven@themaw.net>
+Date: Thu, 19 Oct 2017 08:48:44 +0800
+Subject: [PATCH] autofs-5.1.3 - handle additional nfs versions in mount_nfs.c
+
+Since NFSv4 can now have a subversion it needs to be allowed for.
+
+It's enough to check for an options string starting with "vers=4" or
+"nfsvers=4" because it's used only to set a flag used for special
+casing the availibility probe for any NFS version 4 version.
+
+Signed-off-by: Ian Kent <raven@themaw.net>
+
+Backport Note: skip the hunk on CHANGELOG as it is not needed and lacks
+               the 5.1.3 context it needs
+Author: Christian Ehrhardt <christian.ehrhardt@canonical.com>
+Original-Author: Ian Kent <raven@themaw.net>
+Origin: backport, https://git.kernel.org/pub/scm/linux/storage/autofs/autofs.git/commit/?id=aa1f432180f3878c303088def8d647f1bd50b10b
+
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/<todo-bug>
+Bug-Debian: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=<todo-bug>
+Last-Update: 2019-03-07
+
+---
+ CHANGELOG           | 1 +
+ modules/mount_nfs.c | 5 +++--
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+--- a/modules/mount_nfs.c
++++ b/modules/mount_nfs.c
+@@ -148,8 +148,9 @@ int mount_mount(struct autofs_point *ap,
+ 			} else if (_strncmp("use-weight-only", cp, o_len) == 0) {
+ 				flags |= MOUNT_FLAG_USE_WEIGHT_ONLY;
+ 			} else {
+-				if (_strncmp("vers=4", cp, o_len) == 0 ||
+-				    _strncmp("nfsvers=4", cp, o_len) == 0)
++				/* Is any version of NFSv4 in the options */
++				if (_strncmp("vers=4", cp, 6) == 0 ||
++				    _strncmp("nfsvers=4", cp, 9) == 0)
+ 					vers = NFS4_VERS_MASK | TCP_SUPPORTED;
+ 				else if (_strncmp("vers=3", cp, o_len) == 0 ||
+ 					 _strncmp("nfsvers=3", cp, o_len) == 0) {
