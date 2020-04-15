@@ -1,0 +1,62 @@
+Description: autofs-5.1.2 - fix offset mount location multiple expansion
+
+When parsing an offset map entry mount location it shouldn't be
+expanded because it will have already been dequoted before being
+added to the map entry cache when it was first parsed.
+
+Expanding it again can lead to inconsistent behaviour between
+the expansion of simple map entry locations and offset locations
+that have had quoting removed as part of the initial parse.
+
+Signed-off-by: Ian Kent <raven@themaw.net>
+
+Backport-Note: Positional Changes Only
+Author: Ian Kent <raven@themaw.net>
+Origin: backport, https://kernel.googlesource.com/pub/scm/linux/storage/autofs/autofs/+/95dafa1
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/1680224
+Reviewed-by: Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
+Last-Update: 2020-06-24
+
+--- a/modules/parse_sun.c
++++ b/modules/parse_sun.c
+@@ -1273,6 +1273,31 @@
+ 	}
+ 
+ 	pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, &cur_state);
++
++	/* Offset map entries have been expanded already, avoid expanding
++	 * them again so that the quote handling is consistent between map
++	 * entry locations and (previously expanded) offset map entry
++	 * locations.
++	 */
++	if (*name == '/') {
++		cache_readlock(mc);
++		me = cache_lookup_distinct(mc, name);
++		if (me && me->multi && me->multi != me) {
++			cache_unlock(mc);
++			mapent_len = strlen(mapent) + 1;
++			pmapent = malloc(mapent_len + 1);
++			if (!pmapent) {
++				char *estr = strerror_r(errno, buf, MAX_ERR_BUF);
++				logerr(MODPREFIX "malloc: %s", estr);
++				return 1;
++			}
++			memset(pmapent, 0, mapent_len + 1);
++			strcpy(pmapent, mapent);
++			goto dont_expand;
++		}
++		cache_unlock(mc);
++	}
++
+ 	macro_lock();
+ 
+ 	ctxt->subst = addstdenv(ctxt->subst, NULL);
+@@ -1301,6 +1326,8 @@
+ 	ctxt->subst = removestdenv(ctxt->subst, NULL);
+ 
+ 	macro_unlock();
++
++dont_expand:
+ 	pthread_setcancelstate(cur_state, NULL);
+ 
+ 	debug(ap->logopt, MODPREFIX "expanded entry: %s", pmapent);
